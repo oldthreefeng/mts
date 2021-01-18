@@ -66,7 +66,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&fp, "fp",  EnvDefault("JD_FP",""), "如果不传入，可自动获取，对于无法获取的用户可手动传入参数")
 	rootCmd.PersistentFlags().StringVar(&payPwd, "payPwd", "", "支付密码 可不填")
 	rootCmd.PersistentFlags().BoolVarP(&version, "version", "v", false, "版本号")
-	rootCmd.PersistentFlags().BoolVar(&isFileLog, "log", true, "是否使用文件记录日志")
+	rootCmd.PersistentFlags().BoolVar(&isFileLog, "log", false, "是否使用文件记录日志")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -80,6 +80,8 @@ func initConfig() {
 	}
 	if isFileLog {
 		logger.Cfg(6, "mts.log")
+	} else {
+		logger.Cfg(6, "")
 	}
 }
 

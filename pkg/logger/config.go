@@ -6,22 +6,33 @@ import (
 
 //二次开发logger
 func Cfg(level int, logFIle string) {
-	config := logConfig{
-		TimeFormat: "15:04:05",
-		Console: &consoleLogger{
-			LogLevel: level,
-			Colorful: true,
-		},
-		File: &fileLogger{                  
-			Filename: logFIle,  
-			Level: "TRAC",       
-			Daily: false,         
-			MaxLines: 1000000,   
-			MaxSize: 1,          
-			MaxDays: -1,         
-			Append: true,        
-			PermitMask: "0660",       
-		},
+	var config logConfig
+	if logFIle == "" {
+		config = logConfig{
+			TimeFormat: "15:04:05",
+			Console: &consoleLogger{
+				LogLevel: level,
+				Colorful: true,
+			},
+		}
+	} else {
+		config = logConfig{
+			TimeFormat: "15:04:05",
+			Console: &consoleLogger{
+				LogLevel: level,
+				Colorful: true,
+			},
+			File: &fileLogger{                  
+				Filename: logFIle,  
+				Level: "TRAC",       
+				Daily: false,         
+				MaxLines: 1000000,   
+				MaxSize: 1,          
+				MaxDays: -1,         
+				Append: true,        
+				PermitMask: "0660",       
+			},
+		}
 	}
 	cfg, _ := json.Marshal(config)
 	SetLogger(string(cfg))
