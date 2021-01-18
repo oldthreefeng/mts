@@ -17,10 +17,12 @@ GOFILES = $(shell find . -name "*.go" -type f )
 NAME := mts
 DIRNAME := output/bin
 GOBIN := $(GOPATH)/bin/
+WLSBIN := /mnt/c/Go/bin/
 SRCFILE= main.go
 SOFTWARENAME=$(NAME)-$(VERSION)
 
 PLATFORMS := darwin linux windows
+
 .PHONY: run
 run: deps
 	$(GOBUILD)  -ldflags '$(LDFLAGS)'  -o $(NAME) $(SRCFILE) 
@@ -56,6 +58,7 @@ $(PLATFORMS): Asset deps
 	# cp -f $(NAME) $(DIRNAME)
 	cp -f $(NAME) $(GOBIN)
 	# tar czvf $(BUILDDIR)/$(SOFTWARENAME)-$@-amd64.tar.gz $(DIRNAME)
+	(test -d $(WLSBIN) && cp -f $(NAME) $(WLSBIN)$(NAME).exe) || true
 
 .PHONY: clean
 clean:
@@ -63,6 +66,7 @@ clean:
 	# -rm -rf $(DIRNAME)
 	# -rm -rf $(BUILDDIR)
 	-rm -rf $(GOBIN)$(NAME)
+	-rm -rf $(WLSBIN)$(NAME).exe
 
 .PHONY: push
 push: clean
