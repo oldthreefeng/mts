@@ -38,7 +38,7 @@ func TestLogOut(t *testing.T) {
 func TestLogConfigReload(t *testing.T) {
 	go func() {
 		for {
-			for level, _ := range LevelMap {
+			for level := range LevelMap {
 				SetLogger(fmt.Sprintf(`{
 					"Console": {
 						"level": "%s",
