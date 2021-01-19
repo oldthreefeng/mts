@@ -15,7 +15,6 @@ GOPATH = $(shell go env GOPATH)
 GOFILES = $(shell find . -name "*.go" -type f )
 
 NAME := mts
-DIRNAME := output/bin
 GOBIN := $(GOPATH)/bin/
 WLSBIN := /mnt/c/Go/bin/
 SRCFILE= main.go
@@ -45,11 +44,11 @@ deps:
 release: darwin linux
 
 BUILDDIR:=$(BASEPATH)/output
-
+DIRNAME := $(BUILDDIR)/bin
 .PHONY:Asset
 Asset:
-	@[ -d $(BUILDDIR) ] || mkdir -p $(BUILDDIR)
-	@[ -d $(DIRNAME) ] || mkdir -p $(DIRNAME)
+	# @[ -d $(BUILDDIR) ] || mkdir -p $(BUILDDIR)
+	# @[ -d $(DIRNAME) ] || mkdir -p $(DIRNAME)
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS): Asset deps
