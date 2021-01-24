@@ -5,8 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/axgle/mahonia"
+	"github.com/tidwall/gjson"
 )
 
 func UnixMilli() int64 {
@@ -15,12 +20,12 @@ func UnixMilli() int64 {
 
 func GenerateRangeNum(min, max int64) int64 {
 	rand.Seed(time.Now().UnixNano())
-	randNum := rand.Int63n(max - min) + min
+	randNum := rand.Int63n(max-min) + min
 	return randNum
 }
 
 func Hour2Unix(hour string) (time.Time, error) {
-	return time.ParseInLocation(DateTimeFormatStr, time.Now().Format(DateFormatStr) + " " + hour, time.Local)
+	return time.ParseInLocation(DateTimeFormatStr, time.Now().Format(DateFormatStr)+" "+hour, time.Local)
 }
 
 func Md5(s string) string {
@@ -35,10 +40,33 @@ func Json2Map(j string) map[string]interface{} {
 	return r
 }
 
-
 func RandFloats(min, max float64, n int) float64 {
 	rand.Seed(time.Now().UnixNano())
-	res := min + rand.Float64() * (max - min)
-	res, _ =  strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(n)+"f", res), 64)
+	res := min + rand.Float64()*(max-min)
+	res, _ = strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(n)+"f", res), 64)
 	return res
+}
+
+func FormatJsonpResponse(b []byte, prefix string, isConvertStr bool) gjson.Result {
+	r := string(b)
+	if isConvertStr {
+		r = mahonia.NewDecoder("gbk").ConvertString(r)
+	}
+	r = strings.TrimSpace(r)
+	if prefix != "" {
+		//这里针对http连接 自动提取jsonp的callback
+		if strings.HasPrefix(prefix, "http") {
+			pURL, err := url.Parse(prefix)
+			if err == nil {
+				prefix = pURL.Query().Get("callback")
+			}
+		}
+		r = strings.TrimPrefix(r, prefix)
+	}
+	if strings.HasSuffix(r, ")") || strings.HasPrefix(r, "(") {
+		r = strings.TrimRight(r, ";")
+		r = strings.TrimLeft(r, `(`)
+		r = strings.TrimRight(r, ")")
+	}
+	return gjson.Parse(r)
 }

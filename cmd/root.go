@@ -32,11 +32,11 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "mts",
-	Short: "mts is jd sanp up tools",
+	Short: "mts is jd/tm sanp up tools, default is jd",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) { 
-		Start()
+		jd()
 	},
 }
 
@@ -57,10 +57,10 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mts.yaml)")
-	rootCmd.PersistentFlags().StringVar(&skuId, "skuId", "100012043978", "茅台商品ID")
+	rootCmd.PersistentFlags().StringVar(&skuId, "skuId", "", "茅台商品ID")
 	rootCmd.PersistentFlags().IntVar(&num, "num", 2, "商品数量")
 	rootCmd.PersistentFlags().IntVar(&works, "works", 5, "并发数")
-	rootCmd.PersistentFlags().StringVar(&start, "start", "09:59:59.500", "秒杀开始时间---不带日期")
+	rootCmd.PersistentFlags().StringVar(&start, "start", "", "秒杀开始时间---不带日期")
 	rootCmd.PersistentFlags().StringVar(&brwoserPath, "brwoserPath", "", "chrome浏览器执行路径，路径不能有空格")
 	rootCmd.PersistentFlags().StringVar(&eid, "eid", EnvDefault("JD_EID",""), "如果不传入，可自动获取，对于无法获取的用户可手动传入参数")
 	rootCmd.PersistentFlags().StringVar(&fp, "fp",  EnvDefault("JD_FP",""), "如果不传入，可自动获取，对于无法获取的用户可手动传入参数")
@@ -69,7 +69,6 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&isFileLog, "log", false, "是否使用文件记录日志")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -108,11 +107,17 @@ func EnvDefault(key, defVal string) string {
 	return val
 }
 
-func Start() {
+func jd() {
 	var err error
 	execPath := ""
 	if brwoserPath != "" {
 		execPath = brwoserPath
+	}
+	if start == "" {
+		start = "09:59:58"
+	}
+	if skuId == "" {
+		skuId = "100012043978"
 	}
 	RE:
 	jdSnap := internal.NewjdSnap(execPath, skuId, num, works)
@@ -158,3 +163,4 @@ func Start() {
 		logger.Fatal(err)
 	}
 }
+

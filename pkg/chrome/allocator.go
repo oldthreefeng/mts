@@ -132,6 +132,7 @@ func RequestByCookie(ctx context.Context, req *http.Request, isDisableRedirects 
 			Name:       c.Name,
 			Value:      c.Value,
 		})
+		logger.Info("cookie: ", c.Value)
 	}
 	return httpClient.Do(req)
 }
@@ -208,7 +209,7 @@ func NewExecAllocator(tasks chromedp.Tasks, opts ...chromedp.ExecAllocatorOption
 }
 
 //阻塞浏览器方法
-func WaitAction(wait sync.WaitGroup) chromedp.ActionFunc {
+func WaitAction(wait *sync.WaitGroup) chromedp.ActionFunc {
 	return func(ctx context.Context) error {
 		wait.Add(1)
 		wait.Wait()

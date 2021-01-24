@@ -4,18 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/axgle/mahonia"
-	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/cdproto/dom"
-	"github.com/chromedp/cdproto/network"
-	"github.com/chromedp/cdproto/page"
-	"github.com/chromedp/cdproto/target"
-	"github.com/chromedp/chromedp"
-	"github.com/tidwall/gjson"
-	"github.com/oldthreefeng/mts/pkg/chrome"
-	"github.com/oldthreefeng/mts/pkg/utils"
-	"github.com/oldthreefeng/mts/pkg/logger"
-	"io/ioutil"
+	"io/ioutil"	
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -24,8 +13,21 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/axgle/mahonia"
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/cdproto/dom"
+	"github.com/chromedp/cdproto/network"
+	"github.com/chromedp/cdproto/page"
+	"github.com/chromedp/cdproto/target"
+	"github.com/chromedp/chromedp"
+	"github.com/oldthreefeng/mts/pkg/chrome"
+	"github.com/oldthreefeng/mts/pkg/logger"
+	"github.com/oldthreefeng/mts/pkg/utils"
+	"github.com/tidwall/gjson"
 )
 
+// ErrEmptyData is empty date
 var ErrEmptyData = errors.New("空数据")
 
 type jdSnap struct {
@@ -51,6 +53,7 @@ type jdSnap struct {
 	PayPwd string
 }
 
+// NewjdSnap is return 
 func NewjdSnap(execPath string, skuId string, num, works int) *jdSnap {
 	if works < 0 {
 		works = 1
@@ -127,7 +130,7 @@ func (jsk *jdSnap) GetReq(reqUrl string, params map[string]string, referer strin
 	logger.Info("Get请求接口:", req.URL)
 	//	logger.Debug(string(b))
 	logger.Info("=======================")
-	r := FormatJdResponse(b, req.URL.String(), false)
+	r := utils.FormatJsonpResponse(b, req.URL.String(), false)
 	if r.Raw == "null" || r.Raw == "" {
 		return gjson.Result{}, ErrEmptyData
 	}
@@ -177,7 +180,7 @@ func (jsk *jdSnap) PostReq(reqUrl string, params url.Values, referer string, ctx
 
 	logger.Info("Post请求连接", req.URL)
 	logger.Info("=======================")
-	r := FormatJdResponse(b, req.URL.String(), false)
+	r := utils.FormatJsonpResponse(b, req.URL.String(), false)
 	if r.Raw == "null" || r.Raw == "" {
 		return gjson.Result{}, ErrEmptyData
 	}
