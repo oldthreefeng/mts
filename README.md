@@ -28,6 +28,10 @@ $ make clean
 ```
 mts  -h
 
-## 茅台秒杀.
-mts 
+## 茅台京东秒杀.
+mts
+mts jd
+
+## 茅台天猫秒杀, 暂时不支持~~~
+mts tm
 ```
